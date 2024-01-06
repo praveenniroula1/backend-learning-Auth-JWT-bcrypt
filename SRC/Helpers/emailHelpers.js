@@ -29,3 +29,16 @@ export const verificationEmail = (emailData) => {
   };
   emailProcesser(emailBody);
 };
+
+export const userVerifiedNotification = (emailData) => {
+  const emailBody = {
+    from: '"PraveenStore 👻" <myemail@praveenstore.com>', // sender address
+    to: emailData.email, // list of receivers
+    subject: "Hello ✔", // Subject line
+    text: `Hi ${emailData.fName}, verified, you can login now ${process.env.RoOT_DOMAIN}`, // plain text body
+    html: `<p>Hi ${emailData.fName}</p>
+    <br/>
+    `, // html body
+  };
+  emailProcesser(emailBody);
+};

@@ -1,7 +1,13 @@
 import express from "express";
-import { insertAdminUser } from "../Models/adminUser/AdminUserModel.js";
+import {
+  insertAdminUser,
+  updateOneAdminUser,
+} from "../Models/adminUser/AdminUserModel.js";
 import { hashPassword } from "../Helpers/bcryptHelpers.js";
-import { verificationEmail } from "../Helpers/emailHelpers.js";
+import {
+  userVerifiedNotification,
+  verificationEmail,
+} from "../Helpers/emailHelpers.js";
 // import { uuid } from "uuidv4";
 
 const router = express.Router();
@@ -41,13 +47,31 @@ router.post("/", async (req, res, next) => {
     next();
   }
 });
-router.patch("/verify-email", (req, res, next) => {
+router.patch("/verify-email", async (req, res, next) => {
   try {
+    const { emailValidationCode, email } = req.body;
     console.log(req.body);
-    res.json({
-      status: "success",
-      message: "To Do verify email",
-    });
+
+    const user = await updateOneAdminUser(
+      {
+        emailValidationCode,
+        email,
+      },
+      {
+        status: "active",
+        emailValidationCode: "",
+      }
+    );
+
+    user._id
+      ? res.json({
+          status: "success",
+          message: "Your Account has been verified, you may log in now",
+        }) && userVerifiedNotification(user)
+      : res.json({
+          status: "error",
+          message: "Your Account could not verified, Invalid or expired link",
+        });
   } catch (error) {
     next();
   }
