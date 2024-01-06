@@ -1,0 +1,17 @@
+###check server status
+GET http://localhost:8000
+
+#============Admin API
+### post new admin user
+POST http://localhost:8000/api/v1/admin-user
+Content-Type: application/json
+
+{
+    "fName":"praveen",
+    "lName":"sf",
+    "email":"sdsfcdcdgdffdsdfsfgddsfsd@sfdgdsfsdfdfefs.com",
+    "password":"sgg",
+    "phone":"sdfsf",
+    "address":"sdfgsdf",
+    "dob":"01/02/2023"
+}

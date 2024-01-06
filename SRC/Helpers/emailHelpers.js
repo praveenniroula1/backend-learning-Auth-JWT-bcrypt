@@ -1,0 +1,31 @@
+import nodemailer from "nodemailer";
+// email configuration and send email
+const emailProcesser = async (emailBody) => {
+  try {
+    let transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_SNTP,
+      port: process.env.EMAIL_PORT,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    let info = await transporter.sendMail(emailBody);
+    console.log(nodemailer.getTestMessageUrl(info));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const verificationEmail = (emailData) => {
+  const emailBody = {
+    from: '"PraveenStore 👻" <myemail@praveenstore.com>', // sender address
+    to: emailData.email, // list of receivers
+    subject: "Hello ✔", // Subject line
+    text: `Hi ${emailData.fName}, please follow link to verify EMail: ${emailData.url}`, // plain text body
+    html: `<p>Hi ${emailData.fName}</p>
+    "<p>Hi ${emailData.url}</p>"`, // html body
+  };
+  emailProcesser(emailBody);
+};
