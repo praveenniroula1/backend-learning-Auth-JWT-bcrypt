@@ -1,13 +1,15 @@
 import express from "express";
 import {
+  findOneAdminUser,
   insertAdminUser,
   updateOneAdminUser,
 } from "../Models/adminUser/AdminUserModel.js";
-import { hashPassword } from "../Helpers/bcryptHelpers.js";
+import { comparePassword, hashPassword } from "../Helpers/bcryptHelpers.js";
 import {
   userVerifiedNotification,
   verificationEmail,
 } from "../Helpers/emailHelpers.js";
+import { createJWTs, signAccessJWT } from "../Helpers/jwtHelpers.js";
 // import { uuid } from "uuidv4";
 
 const router = express.Router();
@@ -50,7 +52,6 @@ router.post("/", async (req, res, next) => {
 router.patch("/verify-email", async (req, res, next) => {
   try {
     const { emailValidationCode, email } = req.body;
-    console.log(req.body);
 
     const user = await updateOneAdminUser(
       {
@@ -74,6 +75,35 @@ router.patch("/verify-email", async (req, res, next) => {
         });
   } catch (error) {
     next();
+  }
+});
+
+router.post("/login", async (req, res, next) => {
+  try {
+    const { password, email } = req.body;
+
+    const user = await findOneAdminUser({ email });
+    const isMatched = comparePassword(password, user.password);
+    if (isMatched) {
+      user.password = undefined;
+
+      // JWT
+      const jwt = await createJWTs({ email });
+
+      return res.json({
+        status: "success",
+        message: "Logged In Successfully",
+        user,
+        ...jwt,
+      });
+    }
+
+    return res.json({
+      status: "error",
+      message: "Invalid Logged In credentials",
+    });
+  } catch (error) {
+    next(error);
   }
 });
 

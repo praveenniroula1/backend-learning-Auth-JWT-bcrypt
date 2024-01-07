@@ -7,3 +7,7 @@ export const insertAdminUser = (obj) => {
 export const updateOneAdminUser = (filter, update) => {
   return AdminUserSchema.findOneAndUpdate(filter, update, { new: true });
 };
+
+export const findOneAdminUser = (filter) => {
+  return AdminUserSchema.findOne(filter);
+};
