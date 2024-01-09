@@ -26,3 +26,17 @@ Content-Type: application/json
     "password":"sgg"
     
 }
+
+###testing category
+POST http://localhost:8000/api/v1/category
+Content-Type: application/json
+
+{
+    "status":"active",
+    "name":"Electronics",
+    "parentId":""
+
+}
+
+###get category
+get http://localhost:8000/api/v1/category
