@@ -2,7 +2,9 @@ import express from "express";
 import {
   getAllCategory,
   getCategoryById,
+  hasChildCatById,
   insertCategory,
+  updateCatById,
 } from "../Category/categoryModel.js";
 const router = express.Router();
 import slugify from "slugify";
@@ -43,6 +45,31 @@ router.post("/", async (req, res, next) => {
       : res.json({
           status: "error",
           message: "Unable to add the category, please try again later",
+        });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// update category
+router.put("/", async (req, res, next) => {
+  try {
+    const hasChildCats = await hasChildCatById(req.body._id);
+    if (hasChildCatById) {
+      return res.json({
+        status: "error",
+        message: "This has got a child category",
+      });
+    }
+    const catUpdate = await updateCatById(req.body);
+    catUpdate?._id
+      ? res.json({
+          status: "success",
+          message: " Category has been Updated",
+        })
+      : res.json({
+          status: "error",
+          message: "Unable to Edit the category, please try again later",
         });
   } catch (error) {
     next(error);

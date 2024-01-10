@@ -11,3 +11,12 @@ export const getAllCategory = () => {
 export const getCategoryById = (_id) => {
   return categorySchema.findById(_id);
 };
+
+export const updateCatById = ({ _id, ...update }) => {
+  return categorySchema.findByIdAndUpdate(_id, update, { new: true });
+};
+
+export const hasChildCatById = async (parentId) => {
+  const cat = await categorySchema.findOne(parentId);
+  return cat?._id ? true : false;
+};
