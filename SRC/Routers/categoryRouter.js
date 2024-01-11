@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  deleteCategoryById,
   getAllCategory,
   getCategoryById,
   hasChildCatById,
@@ -70,6 +71,35 @@ router.put("/", async (req, res, next) => {
       : res.json({
           status: "error",
           message: "Unable to Edit the category, please try again later",
+        });
+  } catch (error) {
+    next(error);
+  }
+});
+// delete category
+router.delete("/:_id", async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+
+    const hasChildCats = await hasChildCatById(_id);
+    if (hasChildCats) {
+      return res.json({
+        status: "error",
+        message:
+          "This category has child categories, pelase delete or re assign them to another category befor taking this action.",
+      });
+    }
+
+    const catDelete = await deleteCategoryById(_id);
+
+    catDelete?._id
+      ? res.json({
+          status: "success",
+          message: "Category has been Deleted.",
+        })
+      : res.json({
+          status: "error",
+          message: "Unablel to Delete the category, Please try again later.",
         });
   } catch (error) {
     next(error);
