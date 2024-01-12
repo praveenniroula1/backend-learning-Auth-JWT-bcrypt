@@ -6,8 +6,8 @@ const dbConnection = () => {
     if (!conStr) {
       return console.log("NO DATABASE CONNECTION");
     }
-    const con = mongoose.connect(conStr);
-    con && console.log("mongoDb COnnected");
+    const connection = mongoose.connect(conStr);
+    connection && console.log("mongoDb COnnected");
   } catch (error) {
     console.log(error);
   }
